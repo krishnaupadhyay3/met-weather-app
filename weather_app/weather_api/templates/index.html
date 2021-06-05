@@ -3,8 +3,85 @@
     <head>  
         <meta charset="UTF-8">  
         <title>Weather App</title>  
-    </head>  
-    <body>  
-    <h2>Check Weather</h2>  
-    </body>  
-    </html>  
+  <meta charset="utf-8">
+  <title>weather</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  
+<!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+  <nav class="row" style="background: green; color: white;">
+    <h1 class="col-md-3 text-center">weather</h1>
+  </nav>
+  <br />
+  <br />
+  <center class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="input-group">
+        <input id="demo" type="text" class="form-control" name="city" placeholder="Search">
+        <div class="input-group-btn">
+            <button class="btn btn-default" type='submit' onclick=PostData()> submit
+          </button>
+        </div>
+    </div>
+    <div class="input-group-btn">
+        <button class="btn btn-success" onclick=getLocation()> Get Location
+        </button>
+    <div>
+  </center>
+
+  <div class="row" id="data_show">
+    <div class="col-md-6 col-md-offset-3" id="response_data" >
+    </div>
+
+  </div>
+</body>
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.value = position.coords.latitude+","+position.coords.longitude;
+}
+function PostData(){
+fetch('/weather/', {
+  headers: { "Content-Type": "application/json; charset=utf-8" },
+  method: 'POST',
+  body: JSON.stringify({
+    location: x.value
+  }),
+
+}).then(response => {
+        return response.json() })
+
+  .then(data => {
+    var html = "";
+    $("#response_data").empty();
+    var weather_field = ["coordinate","temp","pressure","humidity"];
+	$.each( weather_field, function( i, item ) {
+ 
+    html += '<h4 style="color:blue;">' + item +" :- " + data[item]+ "</h4>";
+    });
+    $("#response_data").append(html);
+
+  })
+
+}
+
+
+</script>
+</html>
